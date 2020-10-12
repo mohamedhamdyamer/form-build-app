@@ -1,0 +1,19 @@
+public with sharing class TestFormController {
+    public static boolean getForms_returnEmpty() {
+        if (FormListController.getForms().isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public static boolean getForms_returnOneRecord() {
+        if (FormListController.getForms().size() == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}

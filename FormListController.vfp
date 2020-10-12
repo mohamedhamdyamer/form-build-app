@@ -1,0 +1,30 @@
+<apex:page controller="FormListController">
+    
+    <h1 style="font-size:20px">User Info:</h1>
+    <p>User Name: {!userName}</p>
+    <p>Name: {!name}</p>
+    <br /><br />
+    
+    <h1 style="font-size:20px">Permission:</h1>
+    <p style="font-size:16px; font-weight:bold; color:{!if(objectPermission == 'OK!', 'blue', 'red')}">{!ObjectPermission}</p>
+    <br /><br />
+    
+    <h1 style="font-size:20px">Access: <span style="color:{!if(objectPermission == 'OK!', 'green', 'red')}">{!if(ObjectPermission == 'OK!', 'Granted', 'Denied')}</span></h1>
+    <br /><br /><br /> <br />
+
+    <apex:pageBlock rendered="{!if(objectPermission = 'OK!', true, false)}">
+        <apex:pageBlockTable value="{!forms}" var="f">
+            <apex:column headerValue="Action">
+                <apex:outputLink style="color:blue" value="BuildForm?mode=edit&formName={!f.Name}">Edit</apex:outputLink>
+            </apex:column>
+            <apex:column value="{!f.Name}"/>
+            <apex:column value="{!f.Name__c}"/>
+            <apex:column value="{!f.Description__c}"/>
+            <apex:column value="{!f.Date__c}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    <br /><br />
+
+    <apex:outputLink style="font-size:20px;color:blue" value="BuildForm?mode=new">New Form</apex:outputLink>
+
+</apex:page>

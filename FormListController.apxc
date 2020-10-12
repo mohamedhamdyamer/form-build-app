@@ -1,0 +1,41 @@
+public with sharing class FormListController  {
+    
+    public static string getUserName() {
+        string userName = UserInfo.getUserName();
+        return userName;
+    }
+    
+    public static string getName() {
+        string Name = UserInfo.getName();
+        return Name;
+    }
+    
+    public static string getObjectPermission() {
+        List<PermissionSetAssignment> results = Database.query(
+            'SELECT Assignee.Name, PermissionSet.Id, PermissionSet.isOwnedByProfile, PermissionSet.Profile.Name, PermissionSet.Label ' +
+            'FROM PermissionSetAssignment ' +
+            'WHERE Assignee.Name = \'' + getName() + '\' AND ' +
+            'PermissionSetId IN ( SELECT ParentId ' +
+                                 'FROM ObjectPermissions ' +
+                                 'WHERE SObjectType = \'Form__c\' AND ' +
+                                 '      PermissionsRead = true)'
+        );
+        if (results.isEmpty()) {
+            return 'Not OK! - No Permission to view records of this object.';
+        }
+        else if (results.size() ==1) {
+            return 'OK!';
+        }
+        else {
+            return 'Permission status - Unknown!';
+        }
+    }
+    
+    public static List<Form__c> getForms() {
+        List<Form__c> results = Database.query(
+        'Select Name, Name__c, Description__c, Date__c, Components__c ' +
+        'FROM Form__c '
+        );
+        return results;
+    }
+}

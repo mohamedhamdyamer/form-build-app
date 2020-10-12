@@ -1,0 +1,96 @@
+public with sharing class FormBuildController {
+
+    public static string name { get; set; }
+    public static string description { get; set; }
+    public static string components { get; set; }
+
+    public static void init() {
+        string mode = Apexpages.currentpage().getparameters().get('mode');
+        
+        if (mode == 'new') {
+            name = '';
+            description = '';
+        }
+        else if (mode == 'edit') {
+            string formName = Apexpages.currentpage().getparameters().get('formName');
+            List<Form__c> f = Database.query(' Select Name__c, Description__c, Components__c From Form__c Where Name = :formName ');
+            name = f[0].Name__c;
+            description = f[0].Description__c;
+            components = f[0].Components__c;
+        }
+    }
+    
+    public static PageReference save() {
+        PageReference pr;
+        string mode = Apexpages.currentpage().getparameters().get('mode');
+
+        if (mode == 'new') {
+            string str;
+            str = name.toLowerCase();
+            str = str.replace(' ', '.');
+
+            Form__c f = new Form__c();
+            f.Name = str;
+            f.Name__c = name;
+            f.Description__c = description;
+            f.Date__c = date.today();
+            insert f;
+            
+            pr = new PageReference('/apex/BuildForm?mode=edit&formName=' + str);
+        }
+        else if (mode == 'edit') {
+            try {
+                string formName = Apexpages.currentpage().getparameters().get('formName');
+
+                Form__c f = [Select Name From Form__c Where Name = :formName];
+                f.Name__c = name;
+                f.Description__c = description;
+                update f;
+
+                pr = new PageReference('/apex/BuildForm?mode=edit&formName=' + formName);
+            } catch (Exception e) {
+                System.debug('Error: ' + e.getMessage());
+            }
+        }
+
+        return pr;
+    }
+    
+    public static PageReference saveAndClose() {
+        string mode = Apexpages.currentpage().getparameters().get('mode');
+
+        if (mode == 'new') {
+            string str;
+            str = name.toLowerCase();
+            str = str.replace(' ', '.');
+
+            Form__c f = new Form__c();
+            f.Name = str;
+            f.Name__c = name;
+            f.Description__c = description;
+            f.Date__c = date.today();
+            insert f;
+        }
+        else if (mode == 'edit') {
+            try {
+                string formName = Apexpages.currentpage().getparameters().get('formName');
+
+                Form__c f = [Select Name From Form__c Where Name = :formName];
+                f.Name__c = name;
+                f.Description__c = description;
+                update f;
+            } catch (Exception e) {
+                System.debug('Error: ' + e.getMessage());
+            }
+        }
+        
+        PageReference pr = new PageReference('/apex/ListForms');
+        return pr;
+    }
+    
+    public static PageReference cancel() {
+        PageReference pr = new PageReference('/apex/ListForms');
+        return pr;
+    }
+
+}

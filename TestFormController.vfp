@@ -1,0 +1,13 @@
+<apex:page controller="TestFormController">
+    <style>
+        p {
+            font-weight : bold;
+            font-size : 20px;
+        }
+    </style>
+
+    <br /><br />
+    <p>forms_returnEmpty: <span style="{!if(forms_returnEmpty == false, 'color:red', 'color:blue')}">{!forms_returnEmpty}</span></p>
+    <br /><br /><br />
+    <p>forms_returnOneRecord: <span style="{!if(forms_returnOneRecord == false, 'color:red', 'color:blue')}">{!forms_returnOneRecord}</span></p>
+</apex:page>
